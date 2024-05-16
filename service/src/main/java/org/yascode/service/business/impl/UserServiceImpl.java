@@ -9,6 +9,7 @@ import org.yascode.service.business.UserService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -58,5 +59,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> usersRegisteredBetween(LocalDate startDate, LocalDate endDate) {
         return userRepository.findByCreationDateBetween(startDate, endDate);
+    }
+
+    @Override
+    public List<User> usersRegisteredBetween(Optional<String> startDate, Optional<String> endDate) {
+        return userRepository.findAll(UserSpec.usersRegisteredBetween(startDate.map(star -> star.isEmpty() ? null : LocalDate.parse(star)),
+                endDate.map(LocalDate::parse)));
     }
 }

@@ -3,10 +3,7 @@ package org.yascode.web.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yascode.persistence.entity.User;
 import org.yascode.persistence.repository.UserRepository;
 import org.yascode.service.business.UserService;
@@ -42,8 +39,13 @@ public class UserController {
     @GetMapping(value = {"/{start}/{end}"})
     public ResponseEntity<List<User>> usersRegisteredBetween(@PathVariable(name = "start") String start,
                                                              @PathVariable(name = "end") String end) {
-
         return new ResponseEntity<>(userService.usersRegisteredBetween(LocalDate.parse(start), LocalDate.parse(end)), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/usersRegisteredBetween"})
+    public ResponseEntity<List<User>> usersRegisteredBetween(@RequestParam(name = "start", required = false) Optional<String> start,
+                                                             @RequestParam(name = "end", required = false) Optional<String> end) {
+        return new ResponseEntity<>(userService.usersRegisteredBetween(start, end), HttpStatus.OK);
     }
 
 }
