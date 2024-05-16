@@ -5,6 +5,8 @@ import org.yascode.persistence.entity.User;
 import org.yascode.persistence.repository.UserRepository;
 import org.yascode.persistence.repository.specification.UserSpec;
 import org.yascode.service.business.UserService;
+import org.yascode.shared.dto.UserDto;
+import org.yascode.shared.mapper.UserMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,17 +23,21 @@ public class UserServiceImpl implements UserService {
     private Logger LOGGER = Logger.getLogger(getClass().getName());
     private LogRecord logRecord = new LogRecord(Level.INFO, null);
     private final UserRepository userRepository;
+    private final UserMapping<User> userMapping;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapping<User> userMapping) {
         this.userRepository = userRepository;
+        this.userMapping = userMapping;
     }
 
     /**
      * @return all users
      */
     @Override
-    public List<User> allUsers() {
-        return userRepository.findAll();
+    public List<UserDto> allUsers() {
+        return userRepository.findAll().stream()
+             .map(user -> userMapping.toDto(user))
+                .collect(Collectors.toList());
     }
 
     /**

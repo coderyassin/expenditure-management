@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.yascode.persistence.entity.User;
 import org.yascode.persistence.repository.UserRepository;
 import org.yascode.service.business.UserService;
+import org.yascode.shared.dto.UserDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping(value = {"/all"})
-    public ResponseEntity<List<User>> allUsers() {
+    public ResponseEntity<List<UserDto>> allUsers() {
         return new ResponseEntity<>(userService.allUsers(), HttpStatusCode.valueOf(200));
     }
 
