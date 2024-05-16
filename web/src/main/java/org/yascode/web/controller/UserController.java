@@ -1,16 +1,17 @@
 package org.yascode.web.controller;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.yascode.persistence.entity.User;
 import org.yascode.persistence.repository.UserRepository;
 import org.yascode.service.business.UserService;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,33 +42,8 @@ public class UserController {
     @GetMapping(value = {"/{start}/{end}"})
     public ResponseEntity<List<User>> usersRegisteredBetween(@PathVariable(name = "start") String start,
                                                              @PathVariable(name = "end") String end) {
-        LocalDate startDate = LocalDate.parse(start);
-        LocalDate endDate = LocalDate.parse(end);
-        return null;
-    }
 
-    //@PostConstruct
-    void init() {
-
-        User user1 = User.builder()
-                .firstName("Yassin")
-                .lastName("MELLOUKI")
-                .email("yassin.mellouki@gmail.com")
-                .creationDate(LocalDate.now())
-                .build();
-
-        User user2 = User.builder()
-                .firstName("Akram")
-                .lastName("Magri")
-                .email("akram.magri@gmail.com")
-                .creationDate(LocalDate.now())
-                .build();
-
-        userRepository.saveAll(Arrays.asList(user1, user2));
-
-        User user = userService.userById(1L);
-
-        int a = 120;
+        return new ResponseEntity<>(userService.usersRegisteredBetween(LocalDate.parse(start), LocalDate.parse(end)), HttpStatus.OK);
     }
 
 }

@@ -6,6 +6,7 @@ import org.yascode.persistence.repository.UserRepository;
 import org.yascode.persistence.repository.specification.UserSpec;
 import org.yascode.service.business.UserService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -47,5 +48,15 @@ public class UserServiceImpl implements UserService {
         logRecord.setThrown(new Exception(String.format("The user with id: %d does not exist", id)));
         LOGGER.log(logRecord);
         return null;
+    }
+
+    /**
+     * @param startDate
+     * @param endDate
+     * @return List of users who have registered between startDate and endDate
+     */
+    @Override
+    public List<User> usersRegisteredBetween(LocalDate startDate, LocalDate endDate) {
+        return userRepository.findByCreationDateBetween(startDate, endDate);
     }
 }
