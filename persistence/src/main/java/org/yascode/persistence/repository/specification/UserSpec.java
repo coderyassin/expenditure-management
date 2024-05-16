@@ -4,7 +4,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.yascode.persistence.entity.User;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.Optional;
 
 public class UserSpec {
