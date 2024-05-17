@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class ExpenseDto {
 
-    private Long id;
+    //private Long id;
     private Double amount;
     private LocalDate expenseDate;
     private String description;
