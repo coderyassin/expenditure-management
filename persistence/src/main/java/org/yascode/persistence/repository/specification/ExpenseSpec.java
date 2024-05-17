@@ -46,11 +46,16 @@ public class ExpenseSpec {
         };
     }
 
-    public static Specification<Expense> sumOfExpenses(final Optional<Long> idUser, final Optional<LocalDate> startDate,
+    /*public static Specification<Expense> sumOfExpenses(final Optional<Long> idUser, final Optional<LocalDate> startDate,
                                                        final Optional<LocalDate> endDate) {
         return (root, cq, cb) -> {
-            cq.select(root.get("amount"));
+            List<Predicate> predicates = new ArrayList<>();
+
+            idUser.ifPresent(userId -> predicates.add(cb.equal(root.get("user").get("id"), userId)));
+            startDate.ifPresent(start -> predicates.add(cb.greaterThanOrEqualTo(root.get("expenseDate"), start)));
+            endDate.ifPresent(end -> predicates.add(cb.lessThanOrEqualTo(root.get("expenseDate"), end)));
+
             return cb.conjunction();
         };
-    }
+    }*/
 }

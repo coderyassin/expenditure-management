@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpecificationExecutor<Expense> {
 
-    @Query(value = "select sum(e.amount)  from Expense e where e.user.id = ?1")
+    @Query(value = "select sum(e.amount) as amount  from Expense e where e.user.id = ?1")
     ExpenseProjection findExpenseByUserId(Long userId);
 
 }

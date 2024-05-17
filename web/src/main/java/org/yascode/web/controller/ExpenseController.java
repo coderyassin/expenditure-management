@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.yascode.service.business.ExpenseService;
 import org.yascode.shared.dto.ExpenseDto;
+import org.yascode.shared.model.SumOfExpenses;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +35,9 @@ public class ExpenseController {
     }
 
     @GetMapping(value = {"/sumOfExpenses"})
-    ResponseEntity<Double> sumOfExpenses(@RequestParam(name = "idUser", required = false) Optional<Long> idUser,
-                                    @RequestParam(name = "startDate", required = false) Optional<String> startDate,
-                                    @RequestParam(name = "endDate", required = false) Optional<String> endDate) {
+    ResponseEntity<List<SumOfExpenses>> sumOfExpenses(@RequestParam(name = "idUser", required = false) Optional<Long> idUser,
+                                                @RequestParam(name = "startDate", required = false) Optional<String> startDate,
+                                                @RequestParam(name = "endDate", required = false) Optional<String> endDate) {
         return ResponseEntity.ok(expenseService.sumOfExpenses(idUser, startDate, endDate));
     }
 
