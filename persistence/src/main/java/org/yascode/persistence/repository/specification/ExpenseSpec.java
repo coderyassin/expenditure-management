@@ -45,4 +45,12 @@ public class ExpenseSpec {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public static Specification<Expense> sumOfExpenses(final Optional<Long> idUser, final Optional<LocalDate> startDate,
+                                                       final Optional<LocalDate> endDate) {
+        return (root, cq, cb) -> {
+            cq.select(root.get("amount"));
+            return cb.conjunction();
+        };
+    }
 }

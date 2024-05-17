@@ -3,6 +3,7 @@ package org.yascode.service.business.impl;
 import org.springframework.stereotype.Service;
 import org.yascode.persistence.entity.Expense;
 import org.yascode.persistence.repository.ExpenseRepository;
+import org.yascode.persistence.repository.projection.ExpenseProjection;
 import org.yascode.persistence.repository.specification.ExpenseSpec;
 import org.yascode.service.business.ExpenseService;
 import org.yascode.shared.dto.ExpenseDto;
@@ -48,5 +49,18 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .stream()
                 .map(expenseDtoToExpense::toDto)
                 .toList();
+    }
+
+    /**
+     * @param idUser
+     * @param startDate
+     * @param endDate
+     * @return The sum of expenses
+     */
+    @Override
+    public Double sumOfExpenses(Optional<Long> idUser, Optional<String> startDate, Optional<String> endDate) {
+        //List<Expense> expenses = expenseRepository.findAll(ExpenseSpec.sumOfExpenses(idUser, startDate.map(LocalDate::parse), endDate.map(LocalDate::parse)));
+        expenseRepository.findExpenseByUserId(idUser.orElse(1L)).getAmount();
+        return null;
     }
 }

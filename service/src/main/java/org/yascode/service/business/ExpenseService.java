@@ -10,4 +10,5 @@ public interface ExpenseService {
     List<ExpenseDto> allExpenses();
     List<ExpenseDto> expenseBetween(Optional<Long> idUser, Optional<String> startDate, Optional<String> endDate);
 
+    Double sumOfExpenses(Optional<Long> idUser, Optional<String> startDate, Optional<String> endDate);
 }

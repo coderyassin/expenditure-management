@@ -32,4 +32,12 @@ public class ExpenseController {
                                     @RequestParam(name = "endDate", required = false) Optional<String> endDate) {
         return ResponseEntity.ok(expenseService.expenseBetween(idUser, startDate, endDate));
     }
+
+    @GetMapping(value = {"/sumOfExpenses"})
+    ResponseEntity<Double> sumOfExpenses(@RequestParam(name = "idUser", required = false) Optional<Long> idUser,
+                                    @RequestParam(name = "startDate", required = false) Optional<String> startDate,
+                                    @RequestParam(name = "endDate", required = false) Optional<String> endDate) {
+        return ResponseEntity.ok(expenseService.sumOfExpenses(idUser, startDate, endDate));
+    }
+
 }
