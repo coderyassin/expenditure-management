@@ -3,8 +3,8 @@ package org.yascode.web.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.yascode.persistence.entity.Expense;
 import org.yascode.service.business.ExpenseService;
+import org.yascode.shared.dto.ExpenseDto;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ExpenseController {
     }
 
     @GetMapping(value = {"/all"})
-    List<Expense> allExpenses() {
+    List<ExpenseDto> allExpenses() {
         return expenseService.allExpenses();
     }
 }

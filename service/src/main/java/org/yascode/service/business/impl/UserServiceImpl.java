@@ -24,12 +24,12 @@ public class UserServiceImpl implements UserService {
     private Logger LOGGER = Logger.getLogger(getClass().getName());
     private LogRecord logRecord = new LogRecord(Level.INFO, null);
     private final UserRepository userRepository;
-    private final UserMapping<User> UserDtoToUser;
+    private final UserMapping<User> userDtoToUser;
 
     public UserServiceImpl(UserRepository userRepository,
                            UserMapping<User> userDtoToUser) {
         this.userRepository = userRepository;
-        UserDtoToUser = userDtoToUser;
+        this.userDtoToUser = userDtoToUser;
     }
 
     @PostConstruct
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> allUsers() {
         return userRepository.findAll()
                              .stream()
-                             .map(user -> UserDtoToUser.toDto(user))
+                             .map(user -> userDtoToUser.toDto(user))
                              .collect(Collectors.toList());
     }
 
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
             return null;
         List<User> users = userRepository.findAll(UserSpec.userIdIs(id));
         if (users.size() == 1) {
-            return users.stream().findFirst().map(user -> UserDtoToUser.toDto(user)).get();
+            return users.stream().findFirst().map(user -> userDtoToUser.toDto(user)).get();
         } else if(users.size() > 1) {
             logRecord.setThrown(new Exception(String.format("There is more than one user with the id ", id)));
             LOGGER.log(logRecord);
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> usersRegisteredBetween(LocalDate startDate, LocalDate endDate) {
         return userRepository.findByCreationDateBetween(startDate, endDate)
                 .stream()
-                .map(user -> UserDtoToUser.toDto(user))
+                .map(user -> userDtoToUser.toDto(user))
                 .collect(Collectors.toList());
     }
 
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(UserSpec.usersRegisteredBetween(startDate.map(star -> star.isEmpty() ? null : LocalDate.parse(star)),
                 endDate.map(LocalDate::parse)))
                 .stream()
-                .map(user -> UserDtoToUser.toDto(user))
+                .map(user -> userDtoToUser.toDto(user))
                 .collect(Collectors.toList());
     }
 }
