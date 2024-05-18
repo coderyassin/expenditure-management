@@ -1,35 +1,42 @@
 package org.yascode.service.business.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.yascode.persistence.entity.Category;
 import org.yascode.persistence.entity.Expense;
 import org.yascode.persistence.entity.User;
+import org.yascode.persistence.repository.CategoryRepository;
 import org.yascode.persistence.repository.ExpenseRepository;
 import org.yascode.persistence.repository.UserRepository;
 import org.yascode.persistence.repository.specification.ExpenseSpec;
 import org.yascode.service.business.ExpenseService;
 import org.yascode.shared.dto.ExpenseDto;
+import org.yascode.shared.exception.ResourceNotFoundException;
 import org.yascode.shared.mapper.ExpenseMapping;
 import org.yascode.shared.model.SumOfExpenses;
+import org.yascode.shared.requestBody.ExpenseRequestBody;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
     private final ExpenseMapping<Expense> expenseDtoToExpense;
+    private final CategoryRepository categoryRepository;
 
     public ExpenseServiceImpl(ExpenseRepository expenseRepository,
                               UserRepository userRepository,
-                              ExpenseMapping<Expense> expenseDtoToExpense) {
+                              ExpenseMapping<Expense> expenseDtoToExpense, CategoryRepository categoryRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.expenseDtoToExpense = expenseDtoToExpense;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -113,4 +120,44 @@ public class ExpenseServiceImpl implements ExpenseService {
             return sumOfExpenses;
         }
     }
+
+    /**
+     * @param idUser
+     * @param categoryId
+     * @param expenseRequestBody
+     * @return returns the expense that has been saved
+     */
+    @Override
+    public ExpenseDto addExpense(String idUser, String categoryId, ExpenseRequestBody expenseRequestBody) throws ResourceNotFoundException {
+
+        requireNonNull(List.of("User ID cannot be null", "Category ID cannot be null"), idUser, categoryId);
+
+        User user = userRepository.findById(Long.parseLong(idUser))
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id %s not found", idUser)));
+        Category category = categoryRepository.findById(Long.parseLong(categoryId))
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Category with id %s not found", categoryId)));
+
+        Expense expense = Expense.builder()
+                .user(user)
+                .category(category)
+                .description(expenseRequestBody.description())
+                .amount(expenseRequestBody.amount())
+                .expenseDate(expenseRequestBody.expenseDate())
+                .build();
+
+        return expenseDtoToExpense.toDto(expenseRepository.save(expense));
+    }
+
+    private void requireNonNull(List<String> messages, Object... params) {
+
+        AtomicInteger index = new AtomicInteger();
+
+        Arrays.stream(params)
+              .forEach(param -> {
+                Objects.requireNonNull(param, messages.get(index.get()));
+                index.getAndIncrement();
+              });
+    }
+
+
 }

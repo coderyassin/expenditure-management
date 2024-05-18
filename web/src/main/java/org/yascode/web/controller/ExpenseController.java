@@ -1,13 +1,11 @@
 package org.yascode.web.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yascode.service.business.ExpenseService;
 import org.yascode.shared.dto.ExpenseDto;
 import org.yascode.shared.model.SumOfExpenses;
+import org.yascode.shared.requestBody.ExpenseRequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +37,13 @@ public class ExpenseController {
                                                 @RequestParam(name = "startDate", required = false) Optional<String> startDate,
                                                 @RequestParam(name = "endDate", required = false) Optional<String> endDate) {
         return ResponseEntity.ok(expenseService.sumOfExpenses(idUser, startDate, endDate));
+    }
+
+    @PostMapping(value = "/addExpense/{idUser}/{categoryId}")
+    ResponseEntity<?> addExpense(@PathVariable(name = "idUser") String idUser,
+                                 @PathVariable(name = "categoryId") String categoryId,
+                                 @RequestBody ExpenseRequestBody expenseRequestBody) throws Exception {
+        return ResponseEntity.ok(expenseService.addExpense(idUser, categoryId, expenseRequestBody));
     }
 
 }

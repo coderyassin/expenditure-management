@@ -13,6 +13,14 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        #format_sql: true
+        use_sql_comments: true
+logging:
+  level:
+    #org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
 
 management:
   endpoints:
