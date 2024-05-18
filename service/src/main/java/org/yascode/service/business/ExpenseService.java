@@ -1,6 +1,5 @@
 package org.yascode.service.business;
 
-import jakarta.validation.constraints.NotNull;
 import org.yascode.shared.dto.ExpenseDto;
 import org.yascode.shared.model.SumOfExpenses;
 import org.yascode.shared.requestBody.ExpenseRequestBody;
@@ -15,7 +14,7 @@ public interface ExpenseService {
 
     List<SumOfExpenses> sumOfExpenses(Optional<Long> idUser, Optional<String> startDate, Optional<String> endDate);
 
-    ExpenseDto addExpense(@NotNull String idUser,
-                          @NotNull String categoryId,
+    ExpenseDto addExpense(String idUser,
+                          String categoryId,
                           ExpenseRequestBody expenseRequestBody) throws Exception;
 }
