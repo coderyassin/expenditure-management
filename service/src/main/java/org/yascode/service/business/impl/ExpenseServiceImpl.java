@@ -14,6 +14,7 @@ import org.yascode.service.business.ExpenseService;
 import org.yascode.shared.dto.ExpenseDto;
 import org.yascode.shared.exception.ResourceNotFoundException;
 import org.yascode.shared.mapper.ExpenseMapping;
+import org.yascode.shared.model.CheckParams;
 import org.yascode.shared.model.SumOfExpenses;
 import org.yascode.shared.requestBody.ExpenseRequestBody;
 
@@ -129,8 +130,8 @@ public class ExpenseServiceImpl implements ExpenseService {
      */
     @Override
     public ExpenseDto addExpense(String idUser, String categoryId, ExpenseRequestBody expenseRequestBody) throws ResourceNotFoundException {
-
-        requireNonNull(List.of("User ID cannot be null", "Category ID cannot be null"), idUser, categoryId);
+        requireNonNull(new CheckParams(idUser, "User ID cannot be null"),
+                new CheckParams(categoryId, "Category ID cannot be null"));
 
         User user = userRepository.findById(Long.parseLong(idUser))
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id %s not found", idUser)));
@@ -148,15 +149,9 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expenseDtoToExpense.toDto(expenseRepository.save(expense));
     }
 
-    private void requireNonNull(List<String> messages, Object... params) {
-
-        AtomicInteger index = new AtomicInteger();
-
+    private void requireNonNull(CheckParams... params) {
         Arrays.stream(params)
-              .forEach(param -> {
-                Objects.requireNonNull(param, messages.get(index.get()));
-                index.getAndIncrement();
-              });
+                .forEach(param -> Objects.requireNonNull(param.object(), param.message()));
     }
 
 
