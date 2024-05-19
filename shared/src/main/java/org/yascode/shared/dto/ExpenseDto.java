@@ -1,7 +1,9 @@
 package org.yascode.shared.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
@@ -9,13 +11,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ExpenseDto {
+public class ExpenseDto implements Serializable {
 
     //private Long id;
     private Double amount;
     private LocalDate expenseDate;
     private String description;
     private CategoryDto category;
-    private UserDto user;
+    @JsonIgnore
+    private BudgetDto budget;
 
 }

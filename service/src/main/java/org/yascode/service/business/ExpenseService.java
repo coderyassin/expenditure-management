@@ -1,6 +1,7 @@
 package org.yascode.service.business;
 
 import org.yascode.shared.dto.ExpenseDto;
+import org.yascode.shared.enumeration.DateBase;
 import org.yascode.shared.model.SumOfExpenses;
 import org.yascode.shared.requestBody.ExpenseRequestBody;
 import org.yascode.shared.requestBody.RangeDate;
@@ -15,7 +16,7 @@ public interface ExpenseService {
 
     List<SumOfExpenses> sumOfExpenses(Optional<Long> idUser, Optional<String> startDate, Optional<String> endDate);
 
-    ExpenseDto addExpense(String idUser,
+    ExpenseDto addExpense(String budgetId,
                           String categoryId,
                           ExpenseRequestBody expenseRequestBody) throws Exception;
 
@@ -23,7 +24,6 @@ public interface ExpenseService {
 
     List<ExpenseDto> filteringByCategory(RangeDate rangeDate);
 
-    List<ExpenseDto> lastWeekSExpenses(String idUser);
+    List<ExpenseDto> lastDateBaseSExpenses(String idUser, DateBase dateBase, Optional<String> categoryId);
 
-    List<ExpenseDto> lastMonthSExpenses(String idUser);
 }

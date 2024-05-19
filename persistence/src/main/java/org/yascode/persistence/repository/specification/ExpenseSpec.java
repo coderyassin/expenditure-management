@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ExpenseSpec {
 
@@ -38,7 +39,7 @@ public class ExpenseSpec {
         return (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            idUser.ifPresent(userId -> predicates.add(cb.equal(root.get("user").get("id"), userId)));
+            idUser.ifPresent(userId -> predicates.add(cb.equal(root.get("budget").get("user").get("id"), userId)));
             startDate.ifPresent(start -> predicates.add(cb.greaterThanOrEqualTo(root.get("expenseDate"), start)));
             endDate.ifPresent(end -> predicates.add(cb.lessThanOrEqualTo(root.get("expenseDate"), end)));
 
@@ -46,11 +47,22 @@ public class ExpenseSpec {
         };
     }
 
+    public static Specification<Expense> expenseBetween(final Optional<Long> idUser,
+                                                        final Optional<LocalDate> startDate,
+                                                        final Optional<LocalDate> endDate,
+                                                        final Optional<String> categoryId) {
+
+        Specification<Expense> categorySpec = (root, cq, cb) -> categoryId.map(catId -> cb.equal(root.get("category").get("id"), catId))
+                .orElseGet(cb::conjunction);
+
+        return expenseBetween(idUser, startDate, endDate).and(categorySpec);
+    }
+
     public static Specification<Expense> filteringByCategory(String idUser, String categoryId, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
         return (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(cb.equal(root.get("user").get("id"), idUser));
+            predicates.add(cb.equal(root.get("budget").get("user").get("id"), idUser));
             predicates.add(cb.equal(root.get("category").get("id"), categoryId));
             startDate.ifPresent(start -> predicates.add(cb.greaterThanOrEqualTo(root.get("expenseDate"), start)));
             endDate.ifPresent(end -> predicates.add(cb.lessThanOrEqualTo(root.get("expenseDate"), end)));

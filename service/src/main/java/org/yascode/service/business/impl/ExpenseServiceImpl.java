@@ -3,9 +3,11 @@ package org.yascode.service.business.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.yascode.persistence.entity.Budget;
 import org.yascode.persistence.entity.Category;
 import org.yascode.persistence.entity.Expense;
 import org.yascode.persistence.entity.User;
+import org.yascode.persistence.repository.BudgetRepository;
 import org.yascode.persistence.repository.CategoryRepository;
 import org.yascode.persistence.repository.ExpenseRepository;
 import org.yascode.persistence.repository.UserRepository;
@@ -31,14 +33,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final UserRepository userRepository;
     private final ExpenseMapping<Expense> expenseDtoToExpense;
     private final CategoryRepository categoryRepository;
+    private final BudgetRepository budgetRepository;
 
     public ExpenseServiceImpl(ExpenseRepository expenseRepository,
                               UserRepository userRepository,
-                              ExpenseMapping<Expense> expenseDtoToExpense, CategoryRepository categoryRepository) {
+                              ExpenseMapping<Expense> expenseDtoToExpense, CategoryRepository categoryRepository, BudgetRepository budgetRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.expenseDtoToExpense = expenseDtoToExpense;
         this.categoryRepository = categoryRepository;
+        this.budgetRepository = budgetRepository;
     }
 
     /**
@@ -106,7 +110,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
             userRepository.findAll().forEach(user -> {
                 Double amount = allExpenses.stream()
-                        .filter(expense -> expense.getUser().getId().equals(user.getId()))
+                        .filter(expense -> expense.getBudget().getUser().getId().equals(user.getId()))
                         .mapToDouble(Expense::getAmount)
                         .sum();
 
@@ -124,23 +128,23 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     /**
-     * @param idUser
      * @param categoryId
      * @param expenseRequestBody
      * @return returns the expense that has been saved
      */
     @Override
-    public ExpenseDto addExpense(String idUser, String categoryId, ExpenseRequestBody expenseRequestBody) throws ResourceNotFoundException {
-        requireNonNull(new CheckParams(idUser, "User ID cannot be null"),
-                       new CheckParams(categoryId, "Category ID cannot be null"));
+    public ExpenseDto addExpense(String categoryId,
+                                 String budgetId,
+                                 ExpenseRequestBody expenseRequestBody) throws ResourceNotFoundException {
 
-        User user = userRepository.findById(Long.parseLong(idUser))
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id %s not found", idUser)));
         Category category = categoryRepository.findById(Long.parseLong(categoryId))
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Category with id %s not found", categoryId)));
 
+        Budget budget = budgetRepository.findById(Long.parseLong(budgetId))
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Budget with id %s not found", budgetId)));
+
         Expense expense = Expense.builder()
-                .user(user)
+                .budget(budget)
                 .category(category)
                 .description(expenseRequestBody.description())
                 .amount(expenseRequestBody.amount())
@@ -188,24 +192,10 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return List of a user's expenses ofr the last week
      */
     @Override
-    public List<ExpenseDto> lastWeekSExpenses(String idUser) {
+    public List<ExpenseDto> lastDateBaseSExpenses(String idUser, DateBase dateBase, Optional<String> categoryId) {
         Optional<LocalDate> endDate  = Optional.ofNullable(LocalDate.now());
-        Optional<LocalDate> startDate = getStartDate(DateBase.WEEK);
-        return expenseRepository.findAll(ExpenseSpec.expenseBetween(Optional.ofNullable(Long.valueOf(idUser)), startDate, endDate))
-                .stream()
-                .map(expenseDtoToExpense::toDto)
-                .toList();
-    }
-
-    /**
-     * @param idUser
-     * @return List of a user's expenses ofr the last month
-     */
-    @Override
-    public List<ExpenseDto> lastMonthSExpenses(String idUser) {
-        Optional<LocalDate> endDate  = Optional.ofNullable(LocalDate.now());
-        Optional<LocalDate> startDate = getStartDate(DateBase.MONTH);
-        return expenseRepository.findAll(ExpenseSpec.expenseBetween(Optional.ofNullable(Long.valueOf(idUser)), startDate, endDate))
+        Optional<LocalDate> startDate = getStartDate(dateBase);
+        return expenseRepository.findAll(ExpenseSpec.expenseBetween(Optional.ofNullable(Long.valueOf(idUser)), startDate, endDate, categoryId))
                 .stream()
                 .map(expenseDtoToExpense::toDto)
                 .toList();

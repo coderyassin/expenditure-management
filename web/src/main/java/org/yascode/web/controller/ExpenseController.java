@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yascode.service.business.ExpenseService;
 import org.yascode.shared.dto.ExpenseDto;
+import org.yascode.shared.enumeration.DateBase;
 import org.yascode.shared.model.SumOfExpenses;
 import org.yascode.shared.requestBody.ExpenseRequestBody;
 import org.yascode.shared.requestBody.RangeDate;
@@ -34,14 +35,11 @@ public class ExpenseController {
         return ResponseEntity.ok(expenseService.expenseBetween(idUser, startDate, endDate));
     }
 
-    @GetMapping(value = {"/lastWeekSExpenses/{idUser}"})
-    ResponseEntity<List<ExpenseDto>> lastWeekSExpenses(@PathVariable(name = "idUser") String idUser) {
-        return ResponseEntity.ok(expenseService.lastWeekSExpenses(idUser));
-    }
-
-    @GetMapping(value = {"/lastMonthSExpenses/{idUser}"})
-    ResponseEntity<List<ExpenseDto>> lastMonthSExpenses(@PathVariable(name = "idUser") String idUser) {
-        return ResponseEntity.ok(expenseService.lastMonthSExpenses(idUser));
+    @GetMapping(value = {"/lastDateBaseSExpenses/{idUser}/{dateBase}"})
+    ResponseEntity<List<ExpenseDto>> lastDateBaseSExpenses(@PathVariable(name = "idUser") String idUser,
+                                                           @PathVariable(name = "dateBase") DateBase dateBase,
+                                                           @RequestParam(name = "categoryId", required = false) Optional<String> categoryId) {
+        return ResponseEntity.ok(expenseService.lastDateBaseSExpenses(idUser, dateBase, categoryId));
     }
 
     @GetMapping(value = {"/sumOfExpenses"})
@@ -51,11 +49,11 @@ public class ExpenseController {
         return ResponseEntity.ok(expenseService.sumOfExpenses(idUser, startDate, endDate));
     }
 
-    @PostMapping(value = "/addExpense/{idUser}/{categoryId}")
-    ResponseEntity<?> addExpense(@PathVariable(name = "idUser") String idUser,
+    @PostMapping(value = "/addExpense/{budgetId}/{categoryId}")
+    ResponseEntity<?> addExpense(@PathVariable(name = "budgetId") String budgetId,
                                  @PathVariable(name = "categoryId") String categoryId,
                                  @RequestBody ExpenseRequestBody expenseRequestBody) throws Exception {
-        return ResponseEntity.ok(expenseService.addExpense(idUser, categoryId, expenseRequestBody));
+        return ResponseEntity.ok(expenseService.addExpense(budgetId, categoryId, expenseRequestBody));
     }
 
     @GetMapping(value = {"byCategory/{idUser}/{categoryId}"})
