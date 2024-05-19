@@ -12,6 +12,7 @@ import org.yascode.persistence.repository.UserRepository;
 import org.yascode.persistence.repository.specification.ExpenseSpec;
 import org.yascode.service.business.ExpenseService;
 import org.yascode.shared.dto.ExpenseDto;
+import org.yascode.shared.enumeration.DateBase;
 import org.yascode.shared.exception.ResourceNotFoundException;
 import org.yascode.shared.mapper.ExpenseMapping;
 import org.yascode.shared.model.CheckParams;
@@ -180,6 +181,46 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .stream()
                 .map(expenseDtoToExpense::toDto)
                 .toList();
+    }
+
+    /**
+     * @param idUser
+     * @return List of a user's expenses ofr the last week
+     */
+    @Override
+    public List<ExpenseDto> lastWeekSExpenses(String idUser) {
+        Optional<LocalDate> endDate  = Optional.ofNullable(LocalDate.now());
+        Optional<LocalDate> startDate = getStartDate(DateBase.WEEK);
+        return expenseRepository.findAll(ExpenseSpec.expenseBetween(Optional.ofNullable(Long.valueOf(idUser)), startDate, endDate))
+                .stream()
+                .map(expenseDtoToExpense::toDto)
+                .toList();
+    }
+
+    /**
+     * @param idUser
+     * @return List of a user's expenses ofr the last month
+     */
+    @Override
+    public List<ExpenseDto> lastMonthSExpenses(String idUser) {
+        Optional<LocalDate> endDate  = Optional.ofNullable(LocalDate.now());
+        Optional<LocalDate> startDate = getStartDate(DateBase.MONTH);
+        return expenseRepository.findAll(ExpenseSpec.expenseBetween(Optional.ofNullable(Long.valueOf(idUser)), startDate, endDate))
+                .stream()
+                .map(expenseDtoToExpense::toDto)
+                .toList();
+    }
+
+    private Optional<LocalDate> getStartDate(DateBase dateBase) {
+        Optional<LocalDate> startDate = Optional.empty();
+        switch (dateBase) {
+            case DAY -> startDate = Optional.of(LocalDate.now().minusDays(1));
+            case WEEK -> startDate = Optional.of(LocalDate.now().minusWeeks(1));
+            case MONTH -> startDate = Optional.ofNullable(LocalDate.now().minusMonths(1));
+            case YEAR -> startDate = Optional.ofNullable(LocalDate.now().minusYears(1));
+            default -> Optional.empty();
+        }
+        return startDate;
     }
 
     private void requireNonNull(CheckParams... params) {

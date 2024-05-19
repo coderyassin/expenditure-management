@@ -34,6 +34,16 @@ public class ExpenseController {
         return ResponseEntity.ok(expenseService.expenseBetween(idUser, startDate, endDate));
     }
 
+    @GetMapping(value = {"/lastWeekSExpenses/{idUser}"})
+    ResponseEntity<List<ExpenseDto>> lastWeekSExpenses(@PathVariable(name = "idUser") String idUser) {
+        return ResponseEntity.ok(expenseService.lastWeekSExpenses(idUser));
+    }
+
+    @GetMapping(value = {"/lastMonthSExpenses/{idUser}"})
+    ResponseEntity<List<ExpenseDto>> lastMonthSExpenses(@PathVariable(name = "idUser") String idUser) {
+        return ResponseEntity.ok(expenseService.lastMonthSExpenses(idUser));
+    }
+
     @GetMapping(value = {"/sumOfExpenses"})
     ResponseEntity<List<SumOfExpenses>> sumOfExpenses(@RequestParam(name = "idUser", required = false) Optional<Long> idUser,
                                                 @RequestParam(name = "startDate", required = false) Optional<String> startDate,

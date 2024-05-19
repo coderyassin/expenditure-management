@@ -23,4 +23,7 @@ public interface ExpenseService {
 
     List<ExpenseDto> filteringByCategory(RangeDate rangeDate);
 
+    List<ExpenseDto> lastWeekSExpenses(String idUser);
+
+    List<ExpenseDto> lastMonthSExpenses(String idUser);
 }
