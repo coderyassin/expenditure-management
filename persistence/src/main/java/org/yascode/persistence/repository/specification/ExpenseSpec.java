@@ -46,6 +46,21 @@ public class ExpenseSpec {
         };
     }
 
+    public static Specification<Expense> filteringByCategory(String idUser, String categoryId, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
+        return (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(cb.equal(root.get("user").get("id"), idUser));
+            predicates.add(cb.equal(root.get("category").get("id"), categoryId));
+            startDate.ifPresent(start -> predicates.add(cb.greaterThanOrEqualTo(root.get("expenseDate"), start)));
+            endDate.ifPresent(end -> predicates.add(cb.lessThanOrEqualTo(root.get("expenseDate"), end)));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+
+    }
+
     /*public static Specification<Expense> sumOfExpenses(final Optional<Long> idUser, final Optional<LocalDate> startDate,
                                                        final Optional<LocalDate> endDate) {
         return (root, cq, cb) -> {

@@ -17,10 +17,10 @@ import org.yascode.shared.mapper.ExpenseMapping;
 import org.yascode.shared.model.CheckParams;
 import org.yascode.shared.model.SumOfExpenses;
 import org.yascode.shared.requestBody.ExpenseRequestBody;
+import org.yascode.shared.requestBody.RangeDate;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
@@ -131,7 +131,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ExpenseDto addExpense(String idUser, String categoryId, ExpenseRequestBody expenseRequestBody) throws ResourceNotFoundException {
         requireNonNull(new CheckParams(idUser, "User ID cannot be null"),
-                new CheckParams(categoryId, "Category ID cannot be null"));
+                       new CheckParams(categoryId, "Category ID cannot be null"));
 
         User user = userRepository.findById(Long.parseLong(idUser))
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id %s not found", idUser)));
@@ -147,6 +147,39 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .build();
 
         return expenseDtoToExpense.toDto(expenseRepository.save(expense));
+    }
+
+    /**
+     * @param idUser
+     * @param categoryId
+     * @param startDate
+     * @param endDate
+     * @return List of a user's expenses between a date
+     */
+    @Override
+    public List<ExpenseDto> filteringByCategory(String idUser, String categoryId, Optional<String> startDate, Optional<String> endDate) {
+        requireNonNull(new CheckParams(idUser, "User ID cannot be null"),
+                new CheckParams(categoryId, "Category ID cannot be null"));
+
+        return expenseRepository.findAll(ExpenseSpec.filteringByCategory(idUser, categoryId, startDate.map(LocalDate::parse), endDate.map(LocalDate::parse)))
+                .stream()
+                .map(expenseDtoToExpense::toDto)
+                .toList();
+    }
+
+    /**
+     * @param rangeDate
+     * @return List of a user's expenses between a date
+     */
+    @Override
+    public List<ExpenseDto> filteringByCategory(RangeDate rangeDate) {
+        requireNonNull(new CheckParams(rangeDate.idUser(), "User ID cannot be null"),
+                new CheckParams(rangeDate.categoryId(), "Category ID cannot be null"));
+
+        return expenseRepository.findAll(ExpenseSpec.filteringByCategory(rangeDate.idUser(), rangeDate.categoryId(), Optional.ofNullable(rangeDate.startDate()).map(LocalDate::parse), Optional.ofNullable(rangeDate.endDate()).map(LocalDate::parse)))
+                .stream()
+                .map(expenseDtoToExpense::toDto)
+                .toList();
     }
 
     private void requireNonNull(CheckParams... params) {
