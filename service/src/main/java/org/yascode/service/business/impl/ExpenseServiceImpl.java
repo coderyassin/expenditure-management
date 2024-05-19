@@ -218,7 +218,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             case WEEK -> startDate = Optional.of(LocalDate.now().minusWeeks(1));
             case MONTH -> startDate = Optional.ofNullable(LocalDate.now().minusMonths(1));
             case YEAR -> startDate = Optional.ofNullable(LocalDate.now().minusYears(1));
-            default -> Optional.empty();
+            default -> Optional.of(LocalDate.now());
         }
         return startDate;
     }
