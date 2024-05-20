@@ -1,0 +1,13 @@
+server:
+  description: Development
+  address: localhost
+  request-protocol: http
+
+contact:
+  name: Yassin MELLOUKI
+  email: yassin.mellouki.j@gmail.com
+
+info:
+  title: Expense Management
+  version: 0.0.1-SNAPSHOT
+  description: Expense management application.
