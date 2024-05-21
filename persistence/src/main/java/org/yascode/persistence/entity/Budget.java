@@ -34,6 +34,11 @@ public class Budget {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "budget_category", joinColumns = @JoinColumn(name = "budget_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    List<Category> categories;
+
     @OneToMany(mappedBy = "budget")
     private List<Expense> expenses;
 

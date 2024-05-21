@@ -18,6 +18,7 @@ public class BudgetDto implements Serializable {
     private LocalDate startDate;
     private LocalDate endDate;
     private UserDto user;
+    List<CategoryDto> categories;
     @JsonIgnore
     private List<ExpenseDto> expenses;
 }
