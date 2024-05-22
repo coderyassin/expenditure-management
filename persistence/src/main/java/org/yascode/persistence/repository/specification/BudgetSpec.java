@@ -17,7 +17,7 @@ public class BudgetSpec {
         return (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            idUser.ifPresent(userId -> predicates.add(cb.equal(root.get("user").get("id"), userId)));
+            idUser.ifPresent(userId -> predicates.add(cb.equal(root.get("income").get("user").get("id"), userId)));
             startDate.ifPresent(start -> predicates.add(cb.greaterThanOrEqualTo(root.get("startDate"), start)));
             endDate.ifPresent(end -> predicates.add(cb.lessThanOrEqualTo(root.get("endDate"), end)));
 

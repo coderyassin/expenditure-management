@@ -8,7 +8,7 @@ import org.yascode.persistence.repository.projection.ExpenseProjection;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpecificationExecutor<Expense> {
 
-    @Query(value = "select sum(e.amount) as amount  from Expense e where e.budget.user.id = ?1")
+    @Query(value = "select sum(e.amount) as amount  from Expense e where e.budget.income.user.id = ?1")
     ExpenseProjection findExpenseByUserId(Long userId);
 
 }

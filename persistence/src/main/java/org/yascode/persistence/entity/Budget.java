@@ -31,8 +31,8 @@ public class Budget {
     private LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "income_id", nullable = false)
+    private Income income;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "budget_category", joinColumns = @JoinColumn(name = "budget_id"),

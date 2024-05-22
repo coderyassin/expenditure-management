@@ -110,7 +110,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
             userRepository.findAll().forEach(user -> {
                 Double amount = allExpenses.stream()
-                        .filter(expense -> expense.getBudget().getUser().getId().equals(user.getId()))
+                        .filter(expense -> expense.getBudget().getIncome().getUser().getId().equals(user.getId()))
                         .mapToDouble(Expense::getAmount)
                         .sum();
 

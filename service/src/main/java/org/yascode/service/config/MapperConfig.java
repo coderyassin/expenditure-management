@@ -3,14 +3,8 @@ package org.yascode.service.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.yascode.persistence.entity.Budget;
-import org.yascode.persistence.entity.Category;
-import org.yascode.persistence.entity.Expense;
-import org.yascode.persistence.entity.User;
-import org.yascode.shared.mapper.BudgetMapping;
-import org.yascode.shared.mapper.CategoryMapping;
-import org.yascode.shared.mapper.ExpenseMapping;
-import org.yascode.shared.mapper.UserMapping;
+import org.yascode.persistence.entity.*;
+import org.yascode.shared.mapper.*;
 
 @Configuration
 public class MapperConfig {
@@ -39,6 +33,11 @@ public class MapperConfig {
     @Bean
     public BudgetMapping<Budget> budgetDtoToBudget() {
         return new BudgetMapping<>(Budget.class, modelMapper);
+    }
+
+    @Bean
+    public IncomeMapping<Income> incomeDtoToIncome() {
+        return new IncomeMapping<>(Income.class, modelMapper);
     }
 
 }
