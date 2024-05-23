@@ -40,4 +40,9 @@ public class MapperConfig {
         return new IncomeMapping<>(Income.class, modelMapper);
     }
 
+    @Bean
+    public SavingsMapping<Savings> savingsDtoToIncome() {
+        return new SavingsMapping<>(Savings.class, modelMapper);
+    }
+
 }

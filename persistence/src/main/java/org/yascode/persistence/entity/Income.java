@@ -40,4 +40,7 @@ public class Income {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne(mappedBy = "income")
+    private Savings savings;
+
 }

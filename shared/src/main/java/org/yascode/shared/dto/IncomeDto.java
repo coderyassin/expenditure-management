@@ -1,5 +1,6 @@
 package org.yascode.shared.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.yascode.shared.enumeration.Source;
 
@@ -12,9 +13,12 @@ import java.time.LocalDate;
 @Builder
 public class IncomeDto {
 
-    //private Long id;
+    @JsonIgnore
+    private Long id;
     private Source source;
     private LocalDate incomeDate;
     private LocalDate endDate;
     private UserDto user;
+    @JsonIgnore
+    private SavingsDto savings;
 }
