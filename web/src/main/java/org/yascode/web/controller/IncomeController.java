@@ -37,4 +37,13 @@ public class IncomeController {
         return ResponseEntity.ok(incomeService.incomesByYearOrMonth(userId, year, month, monthValue));
     }
 
+    @GetMapping(value = {"/between/{userId}/{year}/{startMonth}/{endMonth}",
+                         "/between/{userId}/{startMonth}/{endMonth}"})
+    public ResponseEntity<?> incomesBetween(@PathVariable(value = "userId") String userId,
+                                            @PathVariable(value = "year", required = false) Optional<Year> year,
+                                            @PathVariable(value = "startMonth", required = false) Optional<Integer> startMonth,
+                                            @PathVariable(value = "endMonth", required = false) Optional<Integer> endMonth) {
+        return ResponseEntity.ok(incomeService.incomesBetween(userId, year, startMonth, endMonth));
+    }
+
 }

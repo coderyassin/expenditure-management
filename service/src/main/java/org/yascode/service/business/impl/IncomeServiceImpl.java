@@ -112,5 +112,19 @@ public class IncomeServiceImpl implements IncomeService {
         return month.isPresent() ? incomesByYearOrMonth(userId, year, month): incomesByYearOrMonthValue(userId, year, monthValue);
     }
 
+    /**
+     * @param userId
+     * @param startMonth
+     * @param endMonth
+     * @return
+     */
+    @Override
+    public List<IncomeDto> incomesBetween(String userId, Optional<Year> year, Optional<Integer> startMonth, Optional<Integer> endMonth) {
+        return incomeRepository.findAll(IncomeSpec.incomesBetween(userId, year, startMonth, endMonth))
+                .stream()
+                .map(incomeDtoToIncome::toDto)
+                .toList();
+    }
+
 
 }

@@ -24,4 +24,6 @@ public interface IncomeService {
     List<IncomeDto> incomesByYearOrMonthValue(String userId, Optional<Year> year, Optional<Integer> month);
 
     List<IncomeDto> incomesByYearOrMonth(String userId, Optional<Year> year, Optional<Month> month, Optional<Integer> monthValue);
+
+    List<IncomeDto> incomesBetween(String userId, Optional<Year> year, Optional<Integer> startMonth, Optional<Integer> endMonth);
 }
