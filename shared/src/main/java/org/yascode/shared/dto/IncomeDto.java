@@ -15,6 +15,7 @@ public class IncomeDto {
 
     @JsonIgnore
     private Long id;
+    private Double amount;
     private Source source;
     private LocalDate incomeDate;
     private LocalDate endDate;
