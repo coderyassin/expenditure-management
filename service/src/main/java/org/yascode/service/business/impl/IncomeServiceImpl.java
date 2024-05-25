@@ -126,5 +126,19 @@ public class IncomeServiceImpl implements IncomeService {
                 .toList();
     }
 
+    /**
+     * @param userId
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Override
+    public double totalIncomesBetween(String userId, Optional<YearMonth> startDate, Optional<YearMonth> endDate) {
+         return incomeRepository.findAll(IncomeSpec.totalIncomesBetween(userId, startDate, endDate))
+                .stream()
+                .mapToDouble(income -> income.getAmount())
+                .sum();
+    }
+
 
 }

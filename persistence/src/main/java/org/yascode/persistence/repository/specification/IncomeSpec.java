@@ -1,6 +1,7 @@
 package org.yascode.persistence.repository.specification;
 
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
 import org.yascode.persistence.entity.Income;
 
@@ -48,5 +49,20 @@ public class IncomeSpec {
 
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+    }
+
+    public static Specification<Income> totalIncomesBetween(String userId, Optional<YearMonth> startDate, Optional<YearMonth> endDate) {
+        return (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(cb.equal(root.get("user").get("id"), userId));
+
+            startDate.ifPresent(start -> predicates.add(cb.greaterThanOrEqualTo(root.get("incomeDate"), start.atDay(1))));
+
+            endDate.ifPresent(end -> predicates.add(cb.lessThan(root.get("incomeDate"), end.plusMonths(1).atDay(1))));
+
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+
     }
 }

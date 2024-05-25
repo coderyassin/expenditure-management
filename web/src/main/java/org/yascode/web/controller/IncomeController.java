@@ -9,6 +9,7 @@ import org.yascode.service.business.IncomeService;
 
 import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import java.util.Optional;
 
 @RestController
@@ -44,6 +45,15 @@ public class IncomeController {
                                             @PathVariable(value = "startMonth", required = false) Optional<Integer> startMonth,
                                             @PathVariable(value = "endMonth", required = false) Optional<Integer> endMonth) {
         return ResponseEntity.ok(incomeService.incomesBetween(userId, year, startMonth, endMonth));
+    }
+
+    @GetMapping(value = {"sum/{userId}/{startDate}/{endDate}",
+                         "sum/{userId}/{startDate}",
+                         "sum/{userId}"})
+    public ResponseEntity<?> totalIncomesBetween(@PathVariable(name = "userId") String userId,
+                                                 @PathVariable(name = "startDate", required = false) Optional<YearMonth> startDate,
+                                                 @PathVariable(name = "endDate", required = false) Optional<YearMonth> endDate) {
+        return ResponseEntity.ok(incomeService.totalIncomesBetween(userId, startDate, endDate));
     }
 
 }

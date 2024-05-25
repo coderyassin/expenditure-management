@@ -7,6 +7,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public interface IncomeService {
@@ -26,4 +27,6 @@ public interface IncomeService {
     List<IncomeDto> incomesByYearOrMonth(String userId, Optional<Year> year, Optional<Month> month, Optional<Integer> monthValue);
 
     List<IncomeDto> incomesBetween(String userId, Optional<Year> year, Optional<Integer> startMonth, Optional<Integer> endMonth);
+
+    double totalIncomesBetween(String userId, Optional<YearMonth> startDate, Optional<YearMonth> endDate);
 }
